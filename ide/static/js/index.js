@@ -10,4 +10,18 @@ $(function(){
 		enableSnippets: true, 
 		enableLiveAutocompletion: true
 	});
+
+	$("#code_submit_btn").on("click", function(){
+		var code = $("#editor").val();
+
+		$.ajax({
+			type: 'POST', 
+			url: '/code/submit/', 
+			data: {'code': code}, 
+			dataType: 'json', 
+			success: function success(data){
+				alert(data);
+			},
+		})
+	})
 })
