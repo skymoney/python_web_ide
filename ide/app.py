@@ -7,6 +7,10 @@ from flask import render_template
 
 app = Flask(__name__)
 
+from docker_util.client import get_client
+
+client = get_client()
+
 
 @app.route('/', methods = ['GET'])
 def index():
