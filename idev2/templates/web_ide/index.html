@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Web IDE v2{% endblock %}
+
+{% block head_file %}
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/static/css/index.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+	<div id="editor"></div>
+	<div id="code_ops">
+		<button class="btn btn-primary pull-right" id="code_submit_btn">提交</button>
+	</div>
+</div>
+    <script src="http://cdn.bootcss.com/ace/1.2.2/ace.js"></script>
+    <script src="http://cdn.bootcss.com/ace/1.2.2/ext-language_tools.js"></script>
+    <script src="http://cdn.bootcss.com/ace/1.2.2/mode-python.js"></script>
+    <script src="/static/js/index.js"></script>
+{% endblock %}
