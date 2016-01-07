@@ -8,6 +8,7 @@ from flask import render_template
 app = Flask(__name__)
 
 from docker_util.client import get_client
+from docker_util.util import exec_code
 
 client = get_client()
 
@@ -27,7 +28,9 @@ def code_submit():
 		code = request.form['code']
 
 		#提交代码，保存代码并运行
+		#提交后生成一个submission记录
 		#保存代码文件，调用执行环境运行
+		exec_code(code=None, account=None, problem_id=None)
 
 		return jsonify({'status': 'ok'})
 
