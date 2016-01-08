@@ -15,7 +15,7 @@ $(function(){
 	});
 
 	$("#code_submit_btn").on("click", function(){
-		var code = $("#editor").val();
+		var code = editor.getValue();
 
 		$.ajax({
 			type: 'POST',

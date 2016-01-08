@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ problem.title }}{% endblock %}
+
+{% block head_file %}
+
+<link href="/static/css/problem_single.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="problem_area">
+            <h2>{{ problem.title }}</h2>
+            <p>题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述
+            题目描述题目描述题目描述题目描述题目描述题目描述</p>
+            <p>输入说明: {{ problem.description }}</p>
+            <p>输出说明</p>
+            <p>提示</p>
+            <p>样例输入</p>
+            <p>样例输出</p>
+        </div>
+        <div class="code_area">
+            <div class="code_menu"></div>
+            <div id="editor"></div>
+            <div id="code_ops">
+                <button class="btn btn-primary pull-right" id="code_submit_btn">提交</button>
+            </div>
+        </div>
+    </div>
+    <script src="http://cdn.bootcss.com/ace/1.2.2/ace.js"></script>
+    <script src="http://cdn.bootcss.com/ace/1.2.2/ext-language_tools.js"></script>
+    <script src="http://cdn.bootcss.com/ace/1.2.2/mode-python.js"></script>
+    <script src="/static/js/problem_single.js"></script>
+{% endblock %}
