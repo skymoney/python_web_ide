@@ -36,6 +36,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
+    'contest',
+    'problem',
+    'submission',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -97,3 +101,15 @@ STATICFILES_DIRS = (
 )
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
+#Code setting
+CODE_ROOT_PATH = os.path.join(BASE_DIR, 'code_data').replace("\\", "/")
+CASE_ROOT_PATH = os.path.join(CODE_ROOT_PATH, 'case_data').replace("\\", "/")
+
+#DOCKER SETTING
+DOCKER_HOST = 'tcp://192.168.99.100:2376'
+DOCKER_TLS_VERIFY = "1"
+DOCKER_CERT_PATH = '/Users/cheng/.docker/machine/machines/default/'
+
+DOCKER_CODE_PATH = "/mnt/code_data"
+DOCKER_CASE_PATH = "/mnt/case_data"
