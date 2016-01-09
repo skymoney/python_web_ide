@@ -12,7 +12,8 @@ from account.models import Account
 from submission.models import Submission
 
 from code_util.util import save_code
-from docker_util.runtime import exec_code
+#from docker_util.runtime import exec_code
+from docker_util.tasks import  exec_code
 
 def index(request):
     return render_to_response('web_ide/index.html')
@@ -32,12 +33,12 @@ def code_submit(request):
 
         code_path = save_code(account_id, problem_id, code)
         submission.code_path = code_path
-        submission.problem_id = 1
+        submission.problem_id = problem_id
 
         submission.save()
 
         #虚机开始运行判题, 异步执行
-        if exec_code(submission) != 0:
-            print 'runtime error'
+        exec_code.delay(submission)
 
-        return HttpResponse(json.dumps({'status': 'ok'}))
+        #返回submission的id，用于js轮询状态
+        return HttpResponse(json.dumps({'status': 'ok', 'submission': submission.id}))

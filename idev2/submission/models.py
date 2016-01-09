@@ -13,7 +13,7 @@ class Submission(models.Model):
     judge_start = models.TimeField(null=True)
     judge_end = models.TimeField(null=True)
 
-    status = models.CharField(max_length=10, default='running')
+    status = models.CharField(max_length=10, default='running') #running accepted fail
 
     language = models.IntegerField(default=1) #语言默认python 1
 
