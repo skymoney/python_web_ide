@@ -26,6 +26,12 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#django celery setting
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = "django://"
+
+CELERY_IMPORTS = ('docker_util.tasks')
 
 # Application definition
 
@@ -40,6 +46,9 @@ INSTALLED_APPS = (
     'contest',
     'problem',
     'submission',
+    'docker_util',
+    'djcelery',
+    'kombu.transport.django',
 )
 
 MIDDLEWARE_CLASSES = (
