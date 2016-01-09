@@ -10,8 +10,21 @@
 {% block head_file %}{% endblock %}
 </head>
 <body>
-{% block content %}{% endblock %}
+    <nav class="navbar navbar-inverse">
+        <div class="navbar-header">
+            <div class="pyoj_band" style="width: 300px;"></div>
+            <a href="#">PyOJ v2</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/problems">练习</a></li>
+                <li><a href="#">比赛</a></li>
+                <li><a href="#">说明</a></li>
+            </ul>
+        </div>
+    </nav>
 
+{% block content %}{% endblock %}
 
 </body>
 

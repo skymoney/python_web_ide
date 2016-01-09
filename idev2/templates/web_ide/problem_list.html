@@ -9,13 +9,26 @@
 {% block content %}
     <div class="container" style="margin-top: 10%;">
     <div class="problem_list">
-        <ul class="list-group">
+        <table class="table">
+            <tr>
+                <th>编号</th>
+                <th>标题</th>
+                <th>通过率</th>
+                <th>提交情况</th>
+                <th>时间</th>
+            </tr>
+            <tbody>
             {% for p in problem_list %}
-                <li class="list-group-item">
-                    <a href="/problem/{{ p.id }}">{{ p.title }}</a>
-                </li>
+                <tr>
+                <td>{{ p.id }}</td>
+                <td><a href="/problem/{{ p.id }}">{{ p.title }}</a></td>
+                <td>{{ p.pass_ratio }}%</td>
+                <td>{{ p.submission }}</td>
+                <td>{{ p.date }}</td>
+                </tr>
             {% endfor %}
-        </ul>
+            </tbody>
+        </table>
     </div>
     </div>
 {% endblock %}
