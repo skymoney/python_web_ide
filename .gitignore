@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+idev2/code_data/
+
+!idev2/code_data/case_data/
