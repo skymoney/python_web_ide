@@ -4,20 +4,26 @@
 
 {% block head_file %}
 
-<link href="/static/css/problem_single.css" rel="stylesheet" />
+    <link href="/static/css/problem/problem_single.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="problem_area">
-            <h2>{{ problem.title }}</h2>
-            <p>题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述题目描述
-            题目描述题目描述题目描述题目描述题目描述题目描述</p>
-            <p>输入说明: {{ problem.description }}</p>
-            <p>输出说明</p>
-            <p>提示</p>
-            <p>样例输入</p>
-            <p>样例输出</p>
+            <div class="problem_head">
+                <h2>{{ problem.title }}
+                    <a href="submissions/" class="pull-right btn btn-default">我的提交</a>
+                </h2>
+
+            </div>
+            <div class="problem_content">
+                <p>{{ problem.description }}</p>
+                <span><h4>输入说明:</h4> {{ problem.input_desc }}</span><br/>
+                <span><h4>输出说明:</h4> {{ problem.output_desc }}</span>
+                <span><h4>样例输入: </h4> {{ problem.sample_input }}</span>
+                <span><h4>样例输出: </h4> {{ problem.sample_output }}</span>
+                <span><h4>提示:</h4> {{ problem.hint }}</span>
+            </div>
         </div>
         <div class="code_area">
             <div class="code_menu">

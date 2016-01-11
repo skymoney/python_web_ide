@@ -2,8 +2,39 @@
 
 {% block title %}我的提交{% endblock %}
 
+{% block head_file %}
+    <link href="/static/css/submission/submission.css" rel="stylesheet" />
+{% endblock %}
+
 {% block content %}
     <div class="container">
+        <div class="sub_title">
+            <h3>我的提交</h3>
+        </div>
+        <div class="sub_wrapper">
+            <table class="table">
+                <tr class="text-center">
+                    <th>编号</th>
+                    <th>提交状态</th>
+                    <th>提交时间</th>
+                </tr>
+                <tbody>
+                    {% for sub in sub_list %}
 
+                            {% if sub.status == 'running' %}
+                                <tr class="active">
+                            {% elif sub.status == 'accepted' %}
+                                <tr class="success">
+                            {% else %}
+                                <tr class="danger">
+                            {% endif %}
+                            <td>{{ forloop.counter}}</td>
+                            <td>{{ sub.status }}</td>
+                            <td>{{ sub.date }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
