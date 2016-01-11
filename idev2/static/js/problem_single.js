@@ -35,7 +35,7 @@ $(function () {
                         dataType: 'json',
                         success: function (data) {
                             var res_obj = eval(data);
-                            if(data['status'] == 'ok' && data['data'] == 'finished'){
+                            if(data['status'] == 'ok' && data['data'] == 'accepted'){
                                 // 轮询完成,停止轮询
                                 clearInterval(query_id);
                             }

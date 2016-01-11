@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
-<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/static/js/base.js"></script>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/static/css/base.css" rel="stylesheet"/>
 
-{% block head_file %}{% endblock %}
+    {% block head_file %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
         <div class="navbar-header">
             <div class="pyoj_band" style="width: 300px;"></div>
             <a href="#">PyOJ v2</a>
@@ -21,9 +24,68 @@
                 <li><a href="#">比赛</a></li>
                 <li><a href="#">说明</a></li>
             </ul>
-        </div>
-    </nav>
 
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.session.account %}
+                    <li>
+                        <a id="user" href="#" class="dropdown-toggle" data-toggle="dropdown"
+                           role="button" aria-haspopup="true"
+                           aria-expanded="false">{{ request.session.account.name }}</a>
+                        <ul class="dropdown-menu" aria-labelledby="user">
+                            <li><a href="#">个人信息</a></li>
+                            <li><a href="/logout">注销</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="#" data-toggle="modal"
+                           data-target="#login_modal">登录{{ request.session.account.name }}</a>
+                    </li>
+                    <li><a href="/register">注册</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="login_title">登录账号</h4>
+            </div>
+            <form class="form-horizontal" action="/login/" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="email" class="col-sm-2 control-label">邮箱:</label>
+
+                        <div class="col-sm-8">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="邮箱">
+                        </div>
+                        <label class="href_label pull-left">
+                            <a href="/register">注册账号</a>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwd" class="col-sm-2 control-label">密码:</label>
+
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control" id="passwd" name="passwd" placeholder="密码">
+                        </div>
+                        <label class="href_label pull-left">
+                            <a href="#">忘记密码?</a>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% block content %}{% endblock %}
 
 </body>
