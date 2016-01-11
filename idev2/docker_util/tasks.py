@@ -59,3 +59,15 @@ def exec_code(submission):
     except:
         #log 记录 异常处理，需要重新运行提交代码？ TODO
         pass
+
+
+def check_runtime_machine():
+    """
+    定时检查虚机状态，超时未响应的虚机关闭
+    :return:
+    """
+    pass
+
+@task()
+def test_cron():
+    print 'cron here.....'

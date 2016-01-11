@@ -1,14 +1,103 @@
 #-*- coding:utf-8 -*-
 
 import os
+from datetime import datetime
 from .util import get_client
 
-from account.models import RuntimeMachine
+from account.models import RuntimeMachine, Account
 from problem.models import Problem
 from code_util.util import switch_case_path, switch_code_path
 
-from idev2.settings import CASE_ROOT_PATH
+from idev2.settings import CASE_ROOT_PATH, DOCKER_CODE_PATH, DOCKER_CASE_PATH, CODE_ROOT_PATH
 
+from .docker_conf import MEMORY_LIMIT, MEMORY_LIMIT_VALUE, CPU_LIMIT_VALUE, \
+    ROOT_IMG, CREATE_CMD
+
+
+def create_runtime(account_id):
+    """
+    创建虚机，挂载账号目录到虚机中的代码路径下，只读权限
+    :return:
+    """
+    client = get_client()
+
+    #创建挂载目录，不同账号的代码目录不同
+    volumes = [DOCKER_CODE_PATH, DOCKER_CASE_PATH]
+    volume_binds = {'/'.join([CODE_ROOT_PATH, str(account_id)]) + '/':
+                        {'bind': DOCKER_CODE_PATH,
+                         'mode': 'ro'},
+                    CASE_ROOT_PATH + '/':
+                        {'bind': DOCKER_CASE_PATH,
+                         'mode': 'ro'},
+                    }
+    try:
+        container_info = client.create_container(image=ROOT_IMG, command=CREATE_CMD, tty=True,
+            volumes=volumes, host_config=client.create_host_config(binds=volume_binds, mem_limit=MEMORY_LIMIT))
+
+        #记录虚机记录
+        runtime_machine = RuntimeMachine(account=Account.objects.get(id=account_id),
+                                         container_id=container_info['Id'],
+                                         cpu_limit=CPU_LIMIT_VALUE, mem_limit=MEMORY_LIMIT_VALUE,
+                                         volume_dir=':'.join(volume_binds.keys()),
+                                         last_modify=datetime.now())
+
+        runtime_machine.save()
+    except Exception, e:
+        #TODO log记录
+        pass
+
+    del client
+
+
+def start_runtime(container_id):
+    """
+    启动虚机，用在登录时候
+    :param container_id:
+    :return:
+    """
+    client = get_client()
+
+    container_info = client.inspect_container(container=container_id)
+
+    if container_info and not container_info['State']['Running']:
+        #容器有效且没有运行
+        client.start(container=container_id)
+
+    del client
+
+def restart_runtime(container_id, force=False):
+    """
+    重启容器
+    :param container_id:
+    :param force: 是否强制重启
+    :return:
+    """
+    client = get_client()
+
+    all_running_container_ids = map(lambda x:x['Id'], client.containers(quiet=True))
+
+    if container_id in all_running_container_ids:
+        if force:
+            client.stop(container=container_id)
+        else:
+            del client
+            return True
+
+    #不在运行或已经被终止
+    try:
+        client.start(container=container_id)
+        del client
+        return True
+    except Exception, e:
+        del client
+        return False
+
+def stop_runtime(container_id):
+    client = get_client()
+
+    client.stop(container=container_id)
+
+    del client
 
 def exec_code(submission):
     """

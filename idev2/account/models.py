@@ -22,7 +22,7 @@ class RuntimeMachine(models.Model):
 
     account = models.ForeignKey('account.Account', db_column='account')
 
-    container_id = models.CharField(max_length=50)
+    container_id = models.CharField(max_length=100)
 
     mem_limit = models.IntegerField()
     cpu_limit = models.IntegerField()
@@ -32,3 +32,16 @@ class RuntimeMachine(models.Model):
 
     class Meta:
         db_table = 'runtime_machine'
+
+
+class RuntimeHeartBeat(models.Model):
+    """
+    心跳记录
+    """
+    id = models.AutoField(primary_key=True)
+
+    account_id = models.IntegerField()
+    last_beat = models.DateTimeField()
+
+    class Meta:
+        db_table = 'runtime_heartbeat'
