@@ -4,19 +4,18 @@ import json
 from datetime import datetime
 import pytz
 
-from django.shortcuts import render_to_response
-from django.http import HttpResponse, JsonResponse
-from django.template import RequestContext
+from django.shortcuts import render
+from django.http import JsonResponse
 
 from account.models import Account
 from submission.models import Submission
 
 from code_util.util import save_code
-#from docker_util.runtime import exec_code
 from docker_util.tasks import  exec_code
 
+
 def index(request):
-    return render_to_response('web_ide/index.html')
+    return render(request, 'web_ide/index.html')
 
 
 def code_submit(request):
@@ -41,4 +40,4 @@ def code_submit(request):
         exec_code.delay(submission)
 
         #返回submission的id，用于js轮询状态
-        return HttpResponse(json.dumps({'status': 'ok', 'submission': submission.id}))
+        return JsonResponse({'status': 'ok', 'submission': submission.id})
