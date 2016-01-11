@@ -9,6 +9,7 @@ from web_ide import views as web_ide_view
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/problem/$', problem_view.ProblemAdminView.as_view()),
     url(r'^logout/$', account_view.logout),
 
     url(r'^account/active/$', account_view.active_account),

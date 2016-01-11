@@ -141,6 +141,9 @@ TEMPLATES = [
     },
 ]
 
+
+ITEMS_PER_PAGE = 10
+
 # Code setting
 CODE_ROOT_PATH = os.path.join(BASE_DIR, 'code_data').replace("\\", "/")
 CASE_ROOT_PATH = os.path.join(CODE_ROOT_PATH, 'case_data').replace("\\", "/")
