@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 
 from django.views.generic import View
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
 from .models import Problem
@@ -30,8 +30,7 @@ class ProblemView(View):
             problem_info['date'] = problem.last_update.strftime("%Y-%m-%d")
             problem_list.append(problem_info)
 
-        return render_to_response('web_ide/problem_list.html',
-                                  {'problem_list': problem_list}, RequestContext(request))
+        return render(request, 'web_ide/problem_list.html', {'problem_list': problem_list})
 
 
 class ProblemSingleView(View):
@@ -41,7 +40,7 @@ class ProblemSingleView(View):
         problem_info = {'title': problem.title, 'id': problem.id, 'description': problem.description,
                         'input_desc': problem.input_description, 'output_desc': problem.output_description,
                         'sample_input': problem.sample_input, 'sample_output': problem.sample_output}
-        return render_to_response('web_ide/problem_single.html', {'problem': problem_info})
+        return render(request, 'web_ide/problem_single.html', {'problem': problem_info})
 
     def post(self, request):
         """
