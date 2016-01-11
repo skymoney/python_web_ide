@@ -1,39 +1,32 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from problem.views import ProblemView, ProblemSingleView
-from submission.views import SubmissionQueryView
-from docker_util.views import RuntimeMachineCheck
-from account.views import AccountLoginView, AccountRegisterView
+from problem import views as problem_view
+from submission import views as submission_view
+from docker_util import views as docker_view
+from account import views as account_view
+from web_ide import views as web_ide_view
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'idev2.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-)
+    url(r'^logout/$', account_view.logout),
 
-urlpatterns += patterns('account.views',
-    url(r'^logout/$', 'logout'),
+    url(r'^account/active/$', account_view.active_account),
+    url(r'^login/$', account_view.AccountLoginView.as_view()),
+    url(r'^register/$', account_view.AccountRegisterView.as_view()),
+    url(r'^$', web_ide_view.index),
 
-    url(r'^account/active/$', 'active_account'),
-    url(r'^login/$', AccountLoginView.as_view()),
-    url(r'^register/$', AccountRegisterView.as_view()),
-)
+    url(r'^code/submit/$', web_ide_view.code_submit),
+    url(r'^problems', problem_view.ProblemView.as_view()),
+    url(r'^problem/(?P<problem_id>\d+)/$', problem_view.ProblemSingleView.as_view()),
 
-urlpatterns += patterns('web_ide.views',
-    url(r'^$', 'index'),
+    url(r'^api/submission/query/$', submission_view.SubmissionQueryView.as_view()),
+    url(r'^api/runtime/check/$', docker_view.RuntimeMachineCheck.as_view()),
 
-    url(r'^code/submit/$', 'code_submit'),
-)
+    url(r'^submissions/$', submission_view.MySubmissionView.as_view()),
+    url(r'^submission/(?P<submission_id>\d+)/$', submission_view.MySubmissionDetailView.as_view()),
+    url(r'^problem/(?P<problem_id>\d+)/submissions/$', submission_view.MySubmissionView.as_view()),
+    url(r'^problem/(?P<problem_id>\d+)/submission/(?P<submission_id>\d+)/$',
+        submission_view.MySubmissionDetailView.as_view()),
 
-urlpatterns += patterns('',
-    url(r'^problems', ProblemView.as_view()),
-    url(r'^problem/(?P<problem_id>\d+)', ProblemSingleView.as_view()),
-)
-
-urlpatterns += patterns('',
-    url(r'^api/submission/query/$', SubmissionQueryView.as_view()),
-    url(r'^api/runtime/check/$', RuntimeMachineCheck.as_view()),
-)
+]

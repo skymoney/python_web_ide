@@ -10,8 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -22,12 +22,20 @@ SECRET_KEY = 'hkfi#fow4h+f_4av7^9@9v#+8x*=&%b2tcg_@h%19t!8$3-$@0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
-#django celery setting
+# django celery setting
 import djcelery
+from datetime import timedelta
+
+# CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERYBEAT_SCHEDULE = {
+                          "test": {
+                              "task": "docker_util.tasks.test_cron",
+                              "schedule": timedelta(seconds=5)
+                          },
+                      },
+
 djcelery.setup_loader()
 BROKER_URL = "django://"
 
@@ -54,7 +62,7 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -65,7 +73,6 @@ ROOT_URLCONF = 'idev2.urls'
 
 WSGI_APPLICATION = 'idev2.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
@@ -73,10 +80,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'py_ide',
-        'HOST':  'localhost', #'121.41.106.89'
+        'HOST': 'localhost',  # '121.41.106.89'
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD':  '123456', #'Sydar10',
+        'PASSWORD': '123456',  # 'Sydar10',
     }
 }
 
@@ -85,14 +92,13 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
@@ -109,16 +115,40 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static').replace('\\', '/'),
 )
 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
+                # list if you haven't customized them:
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                "django.core.context_processors.request",
+            ],
+        },
 
-#Code setting
+    },
+]
+
+# Code setting
 CODE_ROOT_PATH = os.path.join(BASE_DIR, 'code_data').replace("\\", "/")
 CASE_ROOT_PATH = os.path.join(CODE_ROOT_PATH, 'case_data').replace("\\", "/")
 
-#DOCKER SETTING
+# DOCKER SETTING
 DOCKER_HOST = 'tcp://192.168.99.100:2376'
 DOCKER_TLS_VERIFY = "1"
 DOCKER_CERT_PATH = '/Users/cheng/.docker/machine/machines/default/'
 
-DOCKER_CODE_PATH = "/mnt/code_data"
-DOCKER_CASE_PATH = "/mnt/case_data"
+DOCKER_CODE_PATH = "/mnt/code_data/"
+DOCKER_CASE_PATH = "/mnt/case_data/"
