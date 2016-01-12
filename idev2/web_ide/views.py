@@ -28,7 +28,7 @@ def code_submit(request):
         #生成一条submission记录
         submission = Submission()
         submission.account = Account.objects.get(id=account_id)
-        submission.submit_time = datetime.now(tz=pytz.UTC)
+        submission.submit_time = datetime.now(tz=pytz.timezone('Asia/Shanghai'))
 
         code_path = save_code(account_id, problem_id, code)
         submission.code_path = code_path
@@ -41,3 +41,12 @@ def code_submit(request):
 
         #返回submission的id，用于js轮询状态
         return JsonResponse({'status': 'ok', 'submission': submission.id})
+
+
+def help(request):
+    """
+    帮助说明页面
+    :param request:
+    :return:
+    """
+    return render(request, 'web_ide/help.html')
