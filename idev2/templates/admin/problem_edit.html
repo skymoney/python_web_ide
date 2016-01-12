@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}添加习题{% endblock %}
+
+{% block head_file %}
+    <link href="/static/css/problem/problem_admin_edit.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="problem_wrapper">
+            <h3>编辑/新建题目</h3>
+
+            <div class="problem_content">
+                <form class="form-horizontal" method="post">
+                    <input type="hidden" name="problem_id" value="{{ problem.id }}">
+
+                    <div class="form-group">
+                        <label for="problem_title" class="col-sm-2 control-label">题目名: </label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="problem_title" name="problem_title"
+                                   value="{{ problem.problem_title }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="problem_description" class="col-sm-2 control-label">题目描述: </label>
+
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id="problem_description"
+                                      name="problem_description">{{ problem.description }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input_description" class="col-sm-2 control-label">输入说明:</label>
+
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id="input_description" name="input_description">
+                                {{ problem.input_description }}
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="output_description" class="col-sm-2 control-label">输出说明:</label>
+
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id="output_description" name="output_description">
+                                {{ problem.output_description }}
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sample_input" class="col-sm-2 control-label">样例输入:</label>
+
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id="sample_input" name="sample_input">
+                                {{ problem.output_description }}
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sample_output" class="col-sm-2 control-label">样例输出:</label>
+
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id="sample_output" name="sample_output">
+                                {{ problem.sample_output }}
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hints" class="col-sm-2 control-label">提示:</label>
+
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="4" id="hints" name="hints">
+                                {{ problem.hints }}
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="memory_limit" class="col-sm-4 control-label">内存限制(KB为单位): </label>
+
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="memory_limit" name="memory_limit"
+                                   value="{{ problem.memory_limit }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time_limit" class="col-sm-4 control-label">时间限制(ms为单位): </label>
+
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="time_limit" name="time_limit"
+                                   value="{{ problem.memory_limit }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-10 col-sm-offset-2">
+                            <button class="btn btn-primary">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

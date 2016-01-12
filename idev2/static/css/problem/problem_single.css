@@ -28,3 +28,15 @@
 	height: 600px;
 	margin-top: 2%;
 }
+
+#code_ops {
+	margin-top: 2%;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+.result_area {
+	margin-top: 2%;
+	margin-left: 10%;
+	margin-right: 10%;
+}

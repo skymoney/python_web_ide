@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title%}{{ contest.name }}{% endblock %}
+
+{% block head_file %}
+    <link href="/static/css/contest/contest_detail.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="jumbotron">
+            <h2>{{ contest.name }}</h2>
+            <p>{{ contest.description }}</p>
+            <p>开始时间 <code>{{ contest.start }}</code></pre>
+            <p>结束时间 <code>{{ contest.end }}</code></p>
+            <p><button class="btn btn-success btn-lg" id="join_btn">立即参加</button></p>
+        </div>
+        <div class="contest_problem">
+            {% if is_open %}
+                <table class="table">
+                <thead>
+                    <tr>
+                        <td>编号</td>
+                        <td>题目名</td>
+                        <td>提交率</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for problem in problem_list %}
+                        <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ problem.title }}</td>
+                        <td>{{ problem.pass_ratio }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="text-center">比赛还未开始，请稍后再试！</p>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}

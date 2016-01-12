@@ -28,16 +28,20 @@ $(function () {
                 var query_id = setInterval(function (submission_id) {
                     // 调用接口轮询提交状态，每秒钟轮询
                     // 如果状态成功或失败，停止轮询
+                    // 状态分为 running accepted failed
                     $.ajax({
                         url: '/api/submission/query/',
                         type: 'POST',
                         data: {'submission_id': submission_id},
                         dataType: 'json',
                         success: function (data) {
-                            var res_obj = eval(data);
-                            if(data['status'] == 'ok' && data['data'] == 'accepted'){
+                            if(data['status'] == 'ok' && data['data'] != 'running'){
                                 // 轮询完成,停止轮询
                                 clearInterval(query_id);
+                                $("#code_score").html(data['score'])
+                                $("#code_info").html(data['info'])
+                            }else{
+                                $("#code_info").html(data['data'])
                             }
                         }
                     })
