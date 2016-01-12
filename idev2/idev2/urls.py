@@ -6,10 +6,13 @@ from submission import views as submission_view
 from docker_util import views as docker_view
 from account import views as account_view
 from web_ide import views as web_ide_view
+from contest import views as contest_view
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^admin/problem/$', problem_view.ProblemAdminView.as_view()),
+    url(r'^admin/problem/home$', problem_view.admin_problem_home),
+    url(r'^admin/problem/add$', problem_view.ProblemAdminView.as_view()),
+    url(r'^admin/problem/(?P<problem_id>\d+)/edit$', problem_view.ProblemAdminView.as_view()),
     url(r'^logout/$', account_view.logout),
 
     url(r'^account/active/$', account_view.active_account),
@@ -30,4 +33,9 @@ urlpatterns = [
     url(r'^problem/(?P<problem_id>\d+)/submission/(?P<submission_id>\d+)/$',
         submission_view.MySubmissionDetailView.as_view()),
 
+    url(r'^contest/home$', contest_view.ContestHomeView.as_view()),
+    url(r'^contest/(?P<contest_id>\d+)/$', contest_view.ContestDetailView.as_view()),
+    url(r'^contest/join/$', contest_view.ContestDetailView.as_view()),
+
+    url(r'^help$', web_ide_view.help),
 ]
