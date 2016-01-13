@@ -14,6 +14,7 @@ from submission.models import Submission
 
 from idev2.settings import ITEMS_PER_PAGE
 from global_util.util import get_current_page
+from global_util.auth_util import login_required_class
 
 
 class ContestHomeView(View):
@@ -45,18 +46,23 @@ class ContestHomeView(View):
         return render(request, 'contest/contest_home.html', {'contest_list': contest_list})
 
 
-#TODO login required
 class ContestDetailView(View):
+    @login_required_class
     def get(self, request, contest_id):
         account = request.session['account']
         try:
             contest = Contest.objects.get(id=contest_id)
+            if len(ContestJoin.objects.filter(contest_id=contest.id, account_id=account['id'])) > 0:
+                is_join = 1
+            else:
+                is_join = 0
 
             contest_info = {'id': contest.id, 'name': contest.name, 'description': contest.description,
                             'start': contest.start.astimezone(pytz.timezone('Asia/Shanghai'))
                                 .strftime('%Y-%m-%d %H:%M:%S'),
                             'end': contest.end.astimezone(pytz.timezone('Asia/Shanghai'))
-                                .strftime('%Y-%m-%d %H:%M:%S')}
+                                .strftime('%Y-%m-%d %H:%M:%S'),
+                            'is_join': is_join}
             if contest.start > datetime.now(tz=pytz.timezone('Asia/Shanghai')):
                 return render(request, 'contest/contest_detail.html', {'is_open': 0, 'contest': contest_info})
 
@@ -80,6 +86,7 @@ class ContestDetailView(View):
             print e
             return HttpResponseRedirect('/contest/home')
 
+    @login_required_class
     def post(self, request):
         """
         参加比赛
@@ -89,10 +96,10 @@ class ContestDetailView(View):
         contest_id = request.POST.get('contest_id')
         account = request.session['account']
 
-        if len(Contest.objects.filter(id=contest_id) == 0):
+        if len(Contest.objects.filter(id=contest_id)) == 0:
             return JsonResponse({'status': 'error', 'data': u'比赛不存在'})
 
-        if len(ContestJoin.objects.filter(contest_id=contest_id, account_id=account['id'])) == 0:
+        if len(ContestJoin.objects.filter(contest_id=contest_id, account_id=account['id'])) > 0:
             return JsonResponse({'status': 'error', 'data': u'已经参加了该比赛'})
         contest = Contest.objects.get(id=contest_id)
 
