@@ -3,6 +3,8 @@
 {% block title %}参加比赛{% endblock %}
 
 {% block head_file %}
+    <script src="/static/js/notify.min.js" ></script>
+
     <link href="/static/css/contest/contest_home.css" rel="stylesheet" />
 {% endblock %}
 
@@ -30,6 +32,7 @@
                         <td>{{ contest.end }}</td>
                         <td>{{ contest.total_join }}</td>
                         <td>
+                            <input type="hidden" id="contest_id" value="{{ contest.id }}" />
                             {% if contest.is_joined == 1 %}
                                 <button class="btn btn-default btn-xs disabled">已报名</button>
                             {% else %}
@@ -42,4 +45,5 @@
             </table>
         </div>
     </div>
+    <script src="/static/js/contest/contest_base.js"></script>
 {% endblock %}

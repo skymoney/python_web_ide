@@ -3,6 +3,7 @@
 {% block title%}{{ contest.name }}{% endblock %}
 
 {% block head_file %}
+    <script src="/static/js/notify.min.js" ></script>
     <link href="/static/css/contest/contest_detail.css" rel="stylesheet" />
 {% endblock %}
 
@@ -11,9 +12,14 @@
         <div class="jumbotron">
             <h2>{{ contest.name }}</h2>
             <p>{{ contest.description }}</p>
-            <p>开始时间 <code>{{ contest.start }}</code></pre>
+            <p>开始时间 <code>{{ contest.start }}</code></p>
             <p>结束时间 <code>{{ contest.end }}</code></p>
+            <input type="hidden" id="contest_id" value="{{ contest.id }}" />
+            {% if contest.is_join == 0 %}
             <p><button class="btn btn-success btn-lg" id="join_btn">立即参加</button></p>
+            {% else %}
+                <p><button class="btn btn-default btn-lg">已参加</button></p>
+            {% endif %}
         </div>
         <div class="contest_problem">
             {% if is_open %}
@@ -23,14 +29,22 @@
                         <td>编号</td>
                         <td>题目名</td>
                         <td>提交率</td>
+                        <td>是否完成</td>
                     </tr>
                 </thead>
                 <tbody>
                     {% for problem in problem_list %}
                         <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ problem.title }}</td>
+                        <td><a href="/problem/{{ problem.id }}">{{ problem.title }}</a></td>
                         <td>{{ problem.pass_ratio }}</td>
+                        <td>
+                            {% if problem.is_pass == 1 %}
+                                <span class="label label-success">已完成</span>
+                            {% else %}
+                                <span class="label label-default">未完成</span>
+                            {% endif %}
+                        </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -41,4 +55,5 @@
 
         </div>
     </div>
+    <script src="/static/js/contest/contest_base.js"></script>
 {% endblock %}
