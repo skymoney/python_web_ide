@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}比赛管理{% endblock %}
+
+{% block head_file %}
+    <link href="/static/css/contest/contest_admin_home.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div>
+            <div class="contest_header">
+                <h3>比赛管理<a href="/admin/contest/add" class="btn btn-default btn-lg pull-right">新建比赛</a></h3>
+            </div>
+            <div class="contest_table">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>编号</td>
+                            <td>比赛名</td>
+                            <td>开始时间</td>
+                            <td>结束时间</td>
+                            <td>题目数</td>
+                            <td>随机比赛</td>
+                            <td>创建时间</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contest in contest_list %}
+                            <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ contest.name }}</td>
+                            <td>{{ contest.start }}</td>
+                            <td>{{ contest.end }}</td>
+                            <td>{{ contest.problem_nums }}</td>
+                            <td>{{ contest.random }}</td>
+                            <td>{{ contest.create }}</td>
+                            <td>
+                                <button class="btn btn-danger btn-xs">删除</button>
+                                <a href="/admin/contest/{{ contest.id }}/edit" class="btn btn-info btn-xs">编辑</a>
+                            </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
