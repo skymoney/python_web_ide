@@ -13,6 +13,10 @@ urlpatterns = [
     url(r'^admin/problem/home$', problem_view.admin_problem_home),
     url(r'^admin/problem/add$', problem_view.ProblemAdminView.as_view()),
     url(r'^admin/problem/(?P<problem_id>\d+)/edit$', problem_view.ProblemAdminView.as_view()),
+
+    url(r'^admin/contest/home$', contest_view.admin_contest_home),
+    url(r'^admin/contest/add/$', contest_view.ContestAdminDetailView.as_view()),
+    url(r'^admin/contest/(?P<contest_id>\d+)/edit$', contest_view.ContestAdminDetailView.as_view()),
     url(r'^logout/$', account_view.logout),
 
     url(r'^account/active/$', account_view.active_account),

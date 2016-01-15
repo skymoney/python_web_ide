@@ -2,6 +2,7 @@
 
 from datetime import datetime
 import pytz
+import math
 
 from django.views.generic import View
 from django.shortcuts import render
@@ -9,6 +10,8 @@ from django.http import HttpResponseRedirect
 
 from .models import Problem
 from submission.models import Submission
+
+from global_util.util import date_to_string
 
 from idev2.settings import ITEMS_PER_PAGE
 
@@ -32,7 +35,7 @@ class ProblemView(View):
             pass_subs = all_subs.filter(status='accepted')
             problem_info['pass_ratio'] = "%.2f"%(len(pass_subs) * 100.0 / len(all_subs)) if len(all_subs) > 0 else 0.0
             problem_info['submission'] = "/".join([str(len(pass_subs)), str(len(all_subs))])
-            problem_info['date'] = problem.last_update.astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d")
+            problem_info['date'] = date_to_string(problem.last_update)
             problem_list.append(problem_info)
 
         return render(request, 'web_ide/problem_list.html', {'problem_list': problem_list})
@@ -163,14 +166,16 @@ def admin_problem_home(request):
     if page < 1:
         page = 1
 
-    problem_objects = Problem.objects.all().order_by('-last_update')\
+    all_problem_objs = Problem.objects.all()
+
+    total_pages = int(math.ceil())
+
+    problem_objects = all_problem_objs.order_by('-last_update')\
         [(page-1) * ITEMS_PER_PAGE: page * ITEMS_PER_PAGE]
 
     problem_list = [{'id': problem.id, 'title': problem.title, 'contest_id': problem.contest_id,
-                     'last_update': problem.last_update.
-                         astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S"),
-                     'create_time': problem.created_time.
-                         astimezone(pytz.timezone('Asia/Shanghai')).strftime("%Y-%m-%d %H:%M:%S")}
+                     'last_update': date_to_string(problem.last_update),
+                     'create_time': date_to_string(problem.created_time)}
                     for problem in problem_objects]
 
     return render(request, 'admin/problem_home.html', {'problem_list': problem_list})

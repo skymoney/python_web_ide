@@ -3,6 +3,7 @@
 from datetime import datetime
 import pytz
 import random
+import math
 
 from django.views.generic import View
 from django.shortcuts import render
@@ -13,7 +14,7 @@ from problem.models import Problem
 from submission.models import Submission
 
 from idev2.settings import ITEMS_PER_PAGE
-from global_util.util import get_current_page
+from global_util.util import get_current_page, get_total_page, date_to_string
 from global_util.auth_util import login_required_class
 
 
@@ -36,10 +37,8 @@ class ContestHomeView(View):
             is_joined = 1 if account and len(filtered_join.filter(account_id=account['id'])) > 0 else 0
 
             contest_list.append({'id': contest.id, 'name': contest.name,
-                                 'start': contest.start.astimezone(pytz.timezone('Asia/Shanghai'))
-                                        .strftime('%Y-%m-%d %H:%M:%S'),
-                                 'end': contest.end.astimezone(pytz.timezone('Asia/Shanghai'))
-                                        .strftime('%Y-%m-%d %H:%M:%S'),
+                                 'start': date_to_string(contest.start),
+                                 'end': date_to_string(contest.end),
                                  'total_join': joined_count,
                                  'is_joined': is_joined})
 
@@ -58,10 +57,8 @@ class ContestDetailView(View):
                 is_join = 0
 
             contest_info = {'id': contest.id, 'name': contest.name, 'description': contest.description,
-                            'start': contest.start.astimezone(pytz.timezone('Asia/Shanghai'))
-                                .strftime('%Y-%m-%d %H:%M:%S'),
-                            'end': contest.end.astimezone(pytz.timezone('Asia/Shanghai'))
-                                .strftime('%Y-%m-%d %H:%M:%S'),
+                            'start': date_to_string(contest.start),
+                            'end': date_to_string(contest.end),
                             'is_join': is_join}
             if contest.start > datetime.now(tz=pytz.timezone('Asia/Shanghai')):
                 return render(request, 'contest/contest_detail.html', {'is_open': 0, 'contest': contest_info})
@@ -130,3 +127,82 @@ class ContestDetailView(View):
             return JsonResponse({'status': 'ok', 'data': u'已经成功参加比赛'})
         except Exception, e:
             return JsonResponse({'status': 'error', 'data': u'出现错误，请稍后再试'})
+
+
+class ContestAdminDetailView(View):
+    def get(self, request, contest_id=None):
+        if contest_id:
+            try:
+                contest = Contest.objects.get(id=contest_id)
+                contest_info = {'id': contest.id, 'name': contest.name,
+                                'description': contest.description,
+                                'problem_nums': contest.problem_nums,
+                                'start': date_to_string(contest.start),
+                                'end': date_to_string(contest.end),
+                                'create': date_to_string(contest.create_time),
+                                'random': 1 if contest.random else 0}
+                return render(request, 'admin/contest_edit.html', {'contest': contest_info})
+            except Exception, e:
+                return HttpResponseRedirect('/admin/contest/home')
+
+        #新建比赛
+        return render(request, 'admin/contest_edit.html')
+
+    def post(self, request):
+        #新建或者更新比赛POST
+        contest_id = request.POST.get('contest_id')
+        if contest_id:
+            #更新比赛
+            try:
+                contest = Contest.objects.get(id=contest_id)
+            except Exception, e:
+                return HttpResponseRedirect('/admin/contest/home')
+        else:
+            contest = Contest()
+        contest_name = request.POST.get('contest_name')
+        contest_description = request.POST.get('contest_description')
+        contest_problem_nums = request.POST.get('problem_nums')
+        contest_random = True if int(request.POST.get('contest_random')) == 1 else False
+        contest_start = datetime.strptime(request.POST.get('start'), '%Y-%m-%d %H:%M:%S')
+        contest_end = datetime.strptime(request.POST.get('start'), '%Y-%m-%d %H:%M:%S')
+
+        contest.name = contest_name
+        contest.description = contest_description
+        contest.problem_nums = contest_problem_nums
+        contest.random = contest_random
+        contest.start = contest_start
+        contest.end = contest_end
+        contest.create_time = datetime.now(tz=pytz.timezone('Asia/Shanghai'))
+
+        try:
+            contest.save()
+            return HttpResponseRedirect('/admin/contest/home')
+        except Exception, e:
+            return HttpResponseRedirect('/admin/contest/home')
+
+
+
+def admin_contest_home(request):
+    """
+    比赛管理界面
+    :param request:
+    :return:
+    """
+    page = get_current_page(request.GET.get('page'))
+
+    all_contest_objs = Contest.objects.all().order_by('-start')
+
+    total_pages = get_total_page(len(all_contest_objs))
+
+    cur_contest_objs = all_contest_objs[(page - 1) * ITEMS_PER_PAGE: page * ITEMS_PER_PAGE]
+
+    contest_info = [{'id': contest.id, 'name': contest.name,
+                     'start': date_to_string(contest.start),
+                     'end': date_to_string(contest.end),
+                     'create': date_to_string(contest.create_time),
+                     'random': 1 if contest.random else 0,
+                     'problem_nums': contest.problem_nums}
+                    for contest in cur_contest_objs]
+
+    return render(request, 'admin/contest_home.html', {'contest_list': contest_info, 'page': page,
+                                                       'total_pages': total_pages})
