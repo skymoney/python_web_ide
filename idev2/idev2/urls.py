@@ -17,11 +17,15 @@ urlpatterns = [
     url(r'^admin/contest/home$', contest_view.admin_contest_home),
     url(r'^admin/contest/add/$', contest_view.ContestAdminDetailView.as_view()),
     url(r'^admin/contest/(?P<contest_id>\d+)/edit$', contest_view.ContestAdminDetailView.as_view()),
-    url(r'^logout/$', account_view.logout),
+
+    url(r'^admin/account/home$', account_view.account_admin_home),
+    url(r'^admin/account/add/', account_view.AccountAdminView.as_view()),
+    url(r'^admin/account/(?P<account_id>\d+)/edit$', account_view.AccountAdminView.as_view()),
 
     url(r'^account/active/$', account_view.active_account),
     url(r'^login/$', account_view.AccountLoginView.as_view()),
     url(r'^register/$', account_view.AccountRegisterView.as_view()),
+    url(r'^logout/$', account_view.logout),
     url(r'^$', web_ide_view.index),
 
     url(r'^code/submit/$', web_ide_view.code_submit),
