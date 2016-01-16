@@ -1,3 +1,50 @@
 {% extends 'base.html' %}
 
 {% block title %}账号管理{% endblock %}
+
+{% block head_file %}
+    <link href="/static/css/account/account_admin_home.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="account_wrapper">
+            <h3>账号管理</h3>
+            <hr/>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>编号</td>
+                        <td>账号名</td>
+                        <td>邮箱</td>
+                        <td>是否激活</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in account_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ account.name }}</td>
+                            <td>{{ account.email }}</td>
+                            <td>
+                                {% if account.is_active == 1 %}
+                                    <label class="label label-success">已激活</label>
+                                {% else %}
+                                    <label class="label label-danger">未激活</label>
+                                    <button class="btn btn-success btn-xs">发送激活邮件</button>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-xs" id="account_delete">删除账号</button>
+                                <a class="btn btn-info btn-xs" href="/admin/account/{{ account.id }}/edit">
+                                    修改账号
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
