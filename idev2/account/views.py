@@ -11,8 +11,11 @@ from django.shortcuts import render_to_response, render
 from .models import Account, RuntimeMachine
 
 from global_util.account_util import send_active_email
+from global_util.util import get_current_page, date_to_string, get_total_page
 
 from docker_util.runtime import create_runtime, stop_runtime, start_runtime
+
+from idev2.settings import ITEMS_PER_PAGE
 
 
 class AccountRegisterView(View):
@@ -89,6 +92,42 @@ class AccountLoginView(View):
         except Exception, e:
             print e
             return render(request, 'account/login.html', {'status_info': u'邮箱不存在'})
+
+
+class AccountProfileView(View):
+    """
+    个人页面, 展示个人基本信息，提交数，参加的比赛
+    """
+    def get(self, request):
+        pass
+
+class AccountAdminView(View):
+    def get(self, request, account_id):
+        pass
+
+    def post(self, request):
+        pass
+
+
+def account_admin_home(request):
+    """
+    账号管理首页
+    :param request:
+    :return:
+    """
+    page = get_current_page(request.GET.get('page'))
+    all_account_objs = Account.objects.all().order_by('name')
+    total_pages = get_total_page(len(all_account_objs))
+
+    current_account_obj = all_account_objs[(page - 1) * ITEMS_PER_PAGE: page * ITEMS_PER_PAGE]
+
+    account_list = [{'id': account.id, 'name': account.name, 'email': account.email,
+                     'is_active': account.is_active, 'active_code': account.active_code}
+                    for account in current_account_obj]
+
+    return render(request, 'admin/account_admin_home.html', {'account_list': account_list,
+                                                             'page': page,
+                                                             'total_pages': total_pages})
 
 
 def logout(request):
