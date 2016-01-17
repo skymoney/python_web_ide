@@ -2,6 +2,42 @@
 
 {% block title %}{{ account.name }}-个人主页{% endblock %}
 
+{% block head_file %}
+    <link href="/static/css/account/profile.css" rel="stylesheet" />
+{% endblock %}
+
 {% block content %}
-    <div class="container"></div>
+    <div class="container">
+        <div class="account_pannel col-md-3 container-fluid">
+            <div class="row">
+                <h3 class="col-md-2">{{ account.name }}</h3>
+            <a href="#" class="pull-right" style="padding-top: 20px;">编辑信息</a>
+            </div>
+            <div class="row">
+                <label>邮箱: {{ account.email }}</label>
+            </div>
+
+        </div>
+        <div class="submission_pannel col-md-4 container-fluid">
+            <div class="row">
+                <h4>通过的题目</h4>
+                <div class="pass_problem_area">
+                    {% for pass in pass_problems %}
+                        <a href="#">{{ pass.id }}&nbsp;</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <h4>参加过的比赛</h4>
+                <div class="pass_problem_area">
+                    {% for contest in join_contest %}
+                        <a href="#">{{ contest.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <h4>最近的提交</h4>
+            </div>
+        </div>
+    </div>
 {% endblock %}
