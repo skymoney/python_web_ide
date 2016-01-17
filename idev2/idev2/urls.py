@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^admin/account/(?P<account_id>\d+)/edit$', account_view.AccountAdminView.as_view()),
 
     url(r'^account/active/$', account_view.active_account),
+    url(r'^account/profile/$', account_view.AccountProfileView.as_view()),
     url(r'^login/$', account_view.AccountLoginView.as_view()),
     url(r'^register/$', account_view.AccountRegisterView.as_view()),
     url(r'^logout/$', account_view.logout),

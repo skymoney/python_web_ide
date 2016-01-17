@@ -9,8 +9,11 @@ from django.views.generic import View
 from django.shortcuts import render_to_response, render
 
 from .models import Account, RuntimeMachine
+from submission.models import Submission
+from contest.models import Contest, ContestJoin
 
 from global_util.account_util import send_active_email
+from global_util.auth_util import login_required_class
 from global_util.util import get_current_page, date_to_string, get_total_page
 
 from docker_util.runtime import create_runtime, stop_runtime, start_runtime
@@ -98,8 +101,29 @@ class AccountProfileView(View):
     """
     个人页面, 展示个人基本信息，提交数，参加的比赛
     """
+    @login_required_class
     def get(self, request):
-        pass
+        account_session = request.session['account']
+
+        account = Account.objects.get(id=account_session['id'])
+
+        #提交记录，总提交数，通过的题目
+        submit_objs = Submission.objects.filter(account=account)
+        pass_problem_ids = [{'id': s['problem_id']} for s in
+                            submit_objs.filter(status='accepted').values('problem_id').distinct()]
+
+        #参加的比赛
+        joined_contests = [{'id': contest_join.contest_id,
+                            'name': Contest.objects.get(id=contest_join.contest_id).name}
+                           for contest_join in ContestJoin.objects.filter(account_id=account.id)]
+
+        account_info = {'account': {'id': account.id, 'name': account.name, 'email': account.email},
+                        'submission': len(submit_objs),
+                        'pass_problems': pass_problem_ids,
+                        'join_contest': joined_contests}
+
+        return render(request, 'account/profile.html', account_info)
+
 
 class AccountAdminView(View):
     def get(self, request, account_id):
