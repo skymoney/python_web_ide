@@ -8,35 +8,53 @@
 
 {% block content %}
     <div class="container">
-        <div class="account_pannel col-md-3 container-fluid">
-            <div class="row">
-                <h3 class="col-md-2">{{ account.name }}</h3>
-            <a href="#" class="pull-right" style="padding-top: 20px;">编辑信息</a>
-            </div>
-            <div class="row">
-                <label>邮箱: {{ account.email }}</label>
-            </div>
-
-        </div>
-        <div class="submission_pannel col-md-4 container-fluid">
-            <div class="row">
-                <h4>通过的题目</h4>
-                <div class="pass_problem_area">
-                    {% for pass in pass_problems %}
-                        <a href="#">{{ pass.id }}&nbsp;</a>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="row">
-                <h4>参加过的比赛</h4>
-                <div class="pass_problem_area">
-                    {% for contest in join_contest %}
-                        <a href="#">{{ contest.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="row">
-                <h4>最近的提交</h4>
+        <div class="account_area">
+            <h3 class="text-center">
+                {{ account.name }}
+            </h3>
+            <h5 class="text-center">Last Login: {{ account.last_login }}</h5>
+            <div class="info_area">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>通过题目数</td>
+                            <td>{{ pass_problems|length }}</td>
+                            <td>
+                                <h6 class="text-center">通过的题目</h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>总提交数</td>
+                            <td>{{ submission }}</td>
+                            <td rowspan="2" width="50%" align="center">
+                                {% for problem in pass_problems %}
+                                    <a href="/problem/{{ problem.id }}">{{ problem.id }}&nbsp;</a>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>邮箱</td>
+                            <td>{{ account.email }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h5>最近提交</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>编号</td>
+                            <td>提交时间</td>
+                            <td>状态</td>
+                        </tr>
+                        {% for sub in recent_submission %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ sub.submit_time }}</td>
+                                <td>{{ sub.status }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

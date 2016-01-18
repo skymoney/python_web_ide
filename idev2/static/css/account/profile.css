@@ -1,16 +1,16 @@
-.account_pannel {
-    margin-top: 2%;
-    margin-left: 15%;
+body {
+    background-color: lavender;
 }
 
-.submission_pannel {
-    margin-left: 20px;
-    margin-top: 2%;
-    margin-right: 10%;
-}
 
-.pass_problem_area {
-    margin-top: 20px;
+.account_area {
+    margin-top: 2%;
     margin-left: 20%;
     margin-right: 20%;
+    background-color: azure;
+}
+
+.info_area {
+    margin-left: 10%;
+    margin-right: 10%;
 }
