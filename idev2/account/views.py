@@ -112,6 +112,10 @@ class AccountProfileView(View):
         pass_problem_ids = [{'id': s['problem_id']} for s in
                             submit_objs.filter(status='accepted').values('problem_id').distinct()]
 
+        recent_subs = [{'id': sub.id, 'submit_time': date_to_string(sub.submit_time),
+                        'status': sub.status}
+                       for sub in submit_objs.order_by('-submit_time')[:5]]
+
         #参加的比赛
         joined_contests = [{'id': contest_join.contest_id,
                             'name': Contest.objects.get(id=contest_join.contest_id).name}
@@ -119,6 +123,7 @@ class AccountProfileView(View):
 
         account_info = {'account': {'id': account.id, 'name': account.name, 'email': account.email},
                         'submission': len(submit_objs),
+                        'recent_submission': recent_subs,
                         'pass_problems': pass_problem_ids,
                         'join_contest': joined_contests}
 
