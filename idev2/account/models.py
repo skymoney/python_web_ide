@@ -13,6 +13,9 @@ class Account(models.Model):
     active_code = models.CharField(max_length=100)
     is_active = models.IntegerField()
 
+    join_date = models.DateTimeField()
+    last_login = models.DateTimeField()
+
     class Meta:
         db_table = 'account'
 
