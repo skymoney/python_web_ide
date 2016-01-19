@@ -138,6 +138,14 @@ class AccountAdminView(View):
         pass
 
 
+def admin_home(request):
+    """
+    管理首页
+    :param request:
+    :return:
+    """
+    return render(request, 'admin/admin_home.html')
+
 def account_admin_home(request):
     """
     账号管理首页
