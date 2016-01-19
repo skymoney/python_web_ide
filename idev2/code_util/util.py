@@ -1,6 +1,8 @@
 #-*- coding:utf-8 -*-
 
 import os
+from hashlib import md5
+import pytz
 from datetime import datetime
 from idev2.settings import CODE_ROOT_PATH, \
     CASE_ROOT_PATH, DOCKER_CODE_PATH, DOCKER_CASE_PATH
@@ -24,6 +26,21 @@ def save_code(account_id, problem_id, code):
 
     return target_code_path
 
+
+def save_case_file(request_file):
+    """
+    保存上传的习题case文件
+    :param request_file:
+    :return:
+    """
+    case_code = md5(request_file.name.encode('utf-8') +
+                    datetime.now(tz=pytz.timezone('Asia/Shanghai')).strftime('%Y%m%d%H%M%S')).hexdigest()
+
+    with open('/'.join([CASE_ROOT_PATH, case_code + '.py']), 'wb') as case_file:
+        for chunk in request_file.chunks():
+            case_file.write(chunk)
+
+    return case_code
 
 def switch_code_path(path):
     """
