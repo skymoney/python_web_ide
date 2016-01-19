@@ -2,7 +2,7 @@
 
 from datetime import datetime
 import pytz
-import math
+from hashlib import md5
 
 from django.views.generic import View
 from django.shortcuts import render
@@ -10,10 +10,13 @@ from django.http import HttpResponseRedirect
 
 from .models import Problem
 from submission.models import Submission
+from contest.models import Contest
 
-from global_util.util import date_to_string
+from global_util.util import date_to_string, get_total_page
+from global_util.problem_util import problem_auth_check
+from code_util.util import save_case_file
 
-from idev2.settings import ITEMS_PER_PAGE
+from idev2.settings import ITEMS_PER_PAGE, CASE_ROOT_PATH
 
 
 class ProblemView(View):
@@ -42,6 +45,7 @@ class ProblemView(View):
 
 
 class ProblemSingleView(View):
+    @problem_auth_check
     def get(self, request, problem_id, *args, **kwargs):
         problem = Problem.objects.get(id=problem_id)
 
@@ -65,6 +69,11 @@ class ProblemAdminView(View):
     管理员操作题目
     """
     def get(self, request, problem_id=None):
+        all_contest_list = Contest.objects.filter(end__gte=datetime.now(tz=pytz.timezone('Asia/Shanghai')))
+
+        contest_list = [{'id': contest.id, 'name': contest.name} for contest in all_contest_list]
+        contest_list.insert(0, {'id': -1, 'name': u'无'})
+
         if problem_id:
             #编辑题目信息
             try:
@@ -76,12 +85,14 @@ class ProblemAdminView(View):
                                 'output_description': problem.output_description,
                                 'sample_input': problem.sample_input, 'sample_output': problem.sample_output,
                                 'hints': problem.hints,
-                                'memory_limit': problem.memory_limit, 'time_limit': problem.time_limit}
+                                'memory_limit': problem.memory_limit, 'time_limit': problem.time_limit,
+                                'contest_id': problem.contest_id}
 
-                return render(request, 'admin/problem_edit.html', {'problem': problem_info})
+                return render(request, 'admin/problem_edit.html',
+                              {'problem': problem_info, 'contest_list': contest_list})
             except:
-                return render(request, 'admin/problem_edit.html')
-        return render(request, 'admin/problem_edit.html')
+                return render(request, 'admin/problem_edit.html', {'contest_list': contest_list})
+        return render(request, 'admin/problem_edit.html', {'contest_list': contest_list})
 
     def post(self, request, problem_id=None):
         """
@@ -97,35 +108,22 @@ class ProblemAdminView(View):
         problem_hints = request.POST.get('hints')
         problem_sample_input = request.POST.get('sample_input')
         problem_sample_output = request.POST.get('sample_output')
-        problem_memory_limit = request.POST.get('memory_limit')
-        problem_time_limit = request.POST.get('time_limit')
+        problem_memory_limit = request.POST.get('memory_limit', '10000')
+        problem_time_limit = request.POST.get('time_limit', '10000')
+        problem_file = request.FILES.get('problem_case_file')
 
-        problem_contest_id = request.POST.get('contest_Id') #TODO
+        problem_contest_id = int(request.POST.get('contest_id', '-1'))
 
         if problem_id:
             #更新习题信息
             try:
                 problem = Problem.objects.get(id=problem_id)
-                problem.title = problem_title
-                problem.description = problem_description
-                problem.input_description = problem_input
-                problem.output_description = problem_output
-                problem.hints = problem_hints
-                problem.sample_input = problem_sample_input
-                problem.sample_output = problem_sample_output
-                problem.memory_limit = int(problem_memory_limit)
-                problem.time_limit = int(problem_time_limit)
-
-                problem.last_update = datetime.now(tz=pytz.timezone('Asia/Shanghai'))
-
-                problem.save()
-
-                return HttpResponseRedirect('/admin/problem/home')
             except:
                 return HttpResponseRedirect('/admin/problem/home')
-
-        #新建习题
-        problem = Problem()
+        else:
+            #新建习题
+            problem = Problem()
+            problem.created_time = datetime.now(tz=pytz.timezone('Asia/Shanghai'))
         problem.title = problem_title
         problem.description = problem_description
         problem.input_description = problem_input
@@ -135,20 +133,23 @@ class ProblemAdminView(View):
         problem.sample_output = problem_sample_output
         problem.memory_limit = int(problem_memory_limit)
         problem.time_limit = int(problem_time_limit)
-
-        problem.created_time = datetime.now(tz=pytz.timezone('Asia/Shanghai'))
         problem.last_update = datetime.now(tz=pytz.timezone('Asia/Shanghai'))
+        problem.contest_id = problem_contest_id
 
         #生成case_code
-        problem.test_case_code = '' #TODO
+        #上传的文件存储到目录
+        if problem_file and problem_file.size > 0:
+            case_code = save_case_file(problem_file)
+            problem.test_case_code = case_code
 
         #其他字段
         problem.tags = ""
 
         try:
             problem.save()
-        except:
+        except Exception, e:
             #create failed
+            print e
             pass
         return HttpResponseRedirect('/admin/problem/home')
 
@@ -168,7 +169,7 @@ def admin_problem_home(request):
 
     all_problem_objs = Problem.objects.all()
 
-    total_pages = int(math.ceil())
+    total_pages = get_total_page(len(all_problem_objs))
 
     problem_objects = all_problem_objs.order_by('-last_update')\
         [(page-1) * ITEMS_PER_PAGE: page * ITEMS_PER_PAGE]
