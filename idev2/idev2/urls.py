@@ -10,12 +10,15 @@ from contest import views as contest_view
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/home$', account_view.admin_home),
     url(r'^admin/problem/home$', problem_view.admin_problem_home),
     url(r'^admin/problem/add$', problem_view.ProblemAdminView.as_view()),
     url(r'^admin/problem/(?P<problem_id>\d+)/edit$', problem_view.ProblemAdminView.as_view()),
 
     url(r'^admin/contest/home$', contest_view.admin_contest_home),
     url(r'^admin/contest/add/$', contest_view.ContestAdminDetailView.as_view()),
+    url(r'^admin/contest/delete/$', contest_view.admin_contest_delete),
+    url(r'^admin/contest/publish/$', contest_view.admin_contest_publish),
     url(r'^admin/contest/(?P<contest_id>\d+)/edit$', contest_view.ContestAdminDetailView.as_view()),
 
     url(r'^admin/account/home$', account_view.account_admin_home),
