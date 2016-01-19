@@ -25,7 +25,7 @@ class ContestHomeView(View):
         page = get_current_page(request.GET.get('page'))
 
         contest_all = Contest.objects.filter(end__gte=datetime.now(tz=pytz.timezone('Asia/Shanghai')))\
-            .order_by('-end')
+            .filter(is_publish=True).order_by('-end')
 
         current_contest_objects = contest_all[(page-1) * ITEMS_PER_PAGE: page * ITEMS_PER_PAGE ]
 
@@ -164,7 +164,7 @@ class ContestAdminDetailView(View):
         contest_problem_nums = request.POST.get('problem_nums')
         contest_random = True if int(request.POST.get('contest_random')) == 1 else False
         contest_start = datetime.strptime(request.POST.get('start'), '%Y-%m-%d %H:%M:%S')
-        contest_end = datetime.strptime(request.POST.get('start'), '%Y-%m-%d %H:%M:%S')
+        contest_end = datetime.strptime(request.POST.get('end'), '%Y-%m-%d %H:%M:%S')
 
         contest.name = contest_name
         contest.description = contest_description
@@ -179,7 +179,6 @@ class ContestAdminDetailView(View):
             return HttpResponseRedirect('/admin/contest/home')
         except Exception, e:
             return HttpResponseRedirect('/admin/contest/home')
-
 
 
 def admin_contest_home(request):
@@ -206,3 +205,43 @@ def admin_contest_home(request):
 
     return render(request, 'admin/contest_home.html', {'contest_list': contest_info, 'page': page,
                                                        'total_pages': total_pages})
+
+
+def admin_contest_delete(request):
+    """
+    删除比赛，逻辑删，发布设为False，习题不可见
+    :param request:
+    :return:
+    """
+    contest_id = request.POST.get('contest_id')
+
+    try:
+        contest = Contest.objects.get(id=contest_id)
+
+        contest.is_publish = False
+        contest.save()
+        return JsonResponse({'status': 'ok', 'data': u'删除成功，已设为未发布'})
+    except Exception, e:
+        return JsonResponse({'status': 'error', 'data': u'删除失败'})
+
+
+def admin_contest_publish(request):
+    """
+    发布比赛，发布设为True，比赛可被公开访问
+    :param request:
+    :return:
+    """
+    contest_id = request.POST.get('contest_id')
+
+    try:
+        contest = Contest.objects.get(id=contest_id)
+        problem_count = len(Problem.objects.filter(contest_id=contest.id))
+        if problem_count < contest.problem_nums:
+            return JsonResponse({'status': 'error', 'data': u'发布失败, 题目和实际题数不符'})
+        contest.is_publish = True
+
+        contest.save()
+
+        return JsonResponse({'status': 'ok', 'data': u'发布成功，已可以公开访问'})
+    except Exception, e:
+        return JsonResponse({'status': 'error', 'data': u'发布失败'})

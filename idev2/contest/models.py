@@ -18,6 +18,8 @@ class Contest(models.Model):
 
     create_time = models.DateTimeField()
 
+    is_publish = models.BooleanField(default=False) #标记是否发布比赛
+
     class Meta:
         db_table = 'contest'
 
