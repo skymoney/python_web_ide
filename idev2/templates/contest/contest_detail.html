@@ -16,7 +16,7 @@
             <p>结束时间 <code>{{ contest.end }}</code></p>
             <input type="hidden" id="contest_id" value="{{ contest.id }}" />
             {% if contest.is_join == 0 %}
-            <p><button class="btn btn-success btn-lg" id="join_btn">立即参加</button></p>
+                <p><button class="btn btn-success btn-lg join_btn">立即参加</button></p>
             {% else %}
                 <p><button class="btn btn-default btn-lg">已参加</button></p>
             {% endif %}

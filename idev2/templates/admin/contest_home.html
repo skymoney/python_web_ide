@@ -1,9 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'admin_base.html' %}
 
 {% block title %}比赛管理{% endblock %}
 
 {% block head_file %}
+    <script src="/static/js/notify.min.js" ></script>
     <link href="/static/css/contest/contest_admin_home.css" rel="stylesheet" />
+
 {% endblock %}
 
 {% block content %}
@@ -23,7 +25,7 @@
                             <td>题目数</td>
                             <td>随机比赛</td>
                             <td>创建时间</td>
-                            <td></td>
+                            <td style="width:20%"></td>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,8 +39,10 @@
                             <td>{{ contest.random }}</td>
                             <td>{{ contest.create }}</td>
                             <td>
-                                <button class="btn btn-danger btn-xs">删除</button>
+                                <input type="hidden" id="contest_id" value="{{ contest.id }}">
+                                <button class="btn btn-danger btn-xs contest_delete">删除</button>
                                 <a href="/admin/contest/{{ contest.id }}/edit" class="btn btn-info btn-xs">编辑</a>
+                                <button class="btn btn-success btn-xs contest_publish">发布</button>
                             </td>
                             </tr>
                         {% endfor %}
@@ -47,4 +51,5 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="/static/js/admin/contest_base.js"></script>
 {% endblock %}

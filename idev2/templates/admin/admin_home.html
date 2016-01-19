@@ -1,0 +1,39 @@
+{% extends 'admin_base.html' %}
+
+{% block title%}管理控制台{% endblock %}
+
+{% block head_file %}
+    <style type="text/css">
+        .admin_area {
+            margin-left: 10%;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row admin_area">
+            <div class="col-xs-6 col-md-3">
+                <a href="/admin/problem/home" class="thumbnail">
+                    <label style="width:100%;height: 180px;">
+                        <h3 class="text-center" style="padding-top: 20%;">习题管理</h3>
+                    </label>
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="/admin/contest/home" class="thumbnail">
+                    <label style="width:100%;height: 180px;">
+                        <h3 class="text-center" style="padding-top: 20%;">比赛管理</h3>
+                    </label>
+                </a>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <a href="/admin/account/home" class="thumbnail">
+                    <label style="width:100%;height: 180px;">
+                        <h3 class="text-center" style="padding-top: 20%;">账号管理</h3>
+                    </label>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
